@@ -1,0 +1,28 @@
+@charset "UTF-8";
+
+.wrapper {
+	padding: 30px;
+	display: flex;
+}
+
+
+span.title_text {
+	font-family: Helvetica;
+	font-weight:bolder; 
+	font-size: 45pt;
+}
+
+#title01 {
+	color: #738FA7;
+}
+
+#title02 {
+	color: #0C4160;
+}
+
+span.title_text02 {
+	font-family: Helvetica;
+	font-weight: bold;
+	font-size: 20pt;
+	color: #C3CEDA;
+}
