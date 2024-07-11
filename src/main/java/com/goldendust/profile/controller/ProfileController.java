@@ -10,4 +10,14 @@ public class ProfileController {
 	public String home() {
 		return "index";
 	}
+	
+	@GetMapping("/profile")
+	public String profile() {
+		return "profile";
+	}
+	
+	@GetMapping("/contact")
+	public String contact() {
+		return "contact";
+	}
 }
