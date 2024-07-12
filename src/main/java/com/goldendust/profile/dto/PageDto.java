@@ -7,20 +7,23 @@ public class PageDto {
 	private Boolean next;	// 현재 보여지고 있는 페이지 이상으로 페이지가 더 있는지의 여부
 	private Boolean prev;	// 현재 보여지고 있는 페이지 이하로 페이지가 더 있는지의 여부
 	private int total;		// 총 글의 개수
+	private int lastPage;	// 실제 마지막 페이지
 	private Criteria criteria;	// criteria 내의 변수 값들을 불러오기 위한 객체 선언
+	
 	
 	public PageDto() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 	
-	public PageDto(int startPage, int endPage, Boolean next, Boolean prev, int total, Criteria criteria) {
+	public PageDto(int startPage, int endPage, Boolean next, Boolean prev, int total, int lastPage, Criteria criteria) {
 		super();
 		this.startPage = startPage;
 		this.endPage = endPage;
 		this.next = next;
 		this.prev = prev;
 		this.total = total;
+		this.lastPage = lastPage;
 		this.criteria = criteria;
 	}
 
@@ -36,13 +39,13 @@ public class PageDto {
 		// -> 1 2 3 4 5 6 7 8 9 10 next
 		// prev 11 12 13 
 		
-		int realEndPage = (int) Math.ceil(this.total * 1.0 / criteria.getAmount());
-		if (this.endPage > realEndPage) {
-			this.endPage = realEndPage;
+		this.lastPage = (int) Math.ceil(this.total * 1.0 / criteria.getAmount());
+		if (this.endPage > this.lastPage) {
+			this.endPage = this.lastPage;
 		}
 		
 		this.prev = this.startPage > 1;	// startPage 값이 1만 아니면 prev가 true로 저장
-		this.next = this.endPage < realEndPage;
+		this.next = this.endPage < this.lastPage;
 	}
 
 	public int getStartPage() {
@@ -91,6 +94,14 @@ public class PageDto {
 
 	public void setCriteria(Criteria criteria) {
 		this.criteria = criteria;
+	}
+
+	public int getLastPage() {
+		return lastPage;
+	}
+
+	public void setLastPage(int lastPage) {
+		this.lastPage = lastPage;
 	}
 	
 }

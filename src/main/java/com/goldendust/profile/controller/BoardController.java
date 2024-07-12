@@ -1,5 +1,6 @@
 package com.goldendust.profile.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.ibatis.session.SqlSession;
@@ -7,10 +8,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.goldendust.profile.dao.BoardDao;
 import com.goldendust.profile.dao.MemberDao;
 import com.goldendust.profile.dto.BoardDto;
+import com.goldendust.profile.dto.BoardWriteDto;
 import com.goldendust.profile.dto.Criteria;
 import com.goldendust.profile.dto.MemberDto;
 import com.goldendust.profile.dto.PageDto;
@@ -49,6 +53,8 @@ public class BoardController {
 		List<BoardDto> boardList = bDao.getList(criteria.getPageNum(), criteria.getAmount());
 		model.addAttribute("bDtos", boardList);
 		model.addAttribute("pageDto", pageDto);
+		// 현재 보고 있는 페이지 넘기기
+		model.addAttribute("currPage", criteria.getPageNum());
 		
 		return "boardList";
 	}
@@ -77,6 +83,36 @@ public class BoardController {
 		}
 		
 		return "redirect:login";
+	}
+	
+	@PostMapping("/board-write")
+	public String writeOk(BoardWriteDto boardWriteDto) {
+		BoardDao bDao = sqlSession.getMapper(BoardDao.class);
+		bDao.insert(boardWriteDto.getMid(), 
+				boardWriteDto.getMname(), 
+				boardWriteDto.getPtitle(), 
+				boardWriteDto.getPcontent());
+		return "redirect:board";
+	}
+	
+	
+	@GetMapping("/board-search")
+	public String searchList(@RequestParam("key") String key, Criteria criteria, Model model) {
+BoardDao bDao = sqlSession.getMapper(BoardDao.class);
+		
+		int totalPostCount = bDao.getSearchResultTotalCount(key);
+		
+		PageDto pageDto = new PageDto(totalPostCount, criteria);
+		
+		List<BoardDto> boardList = bDao.getSearchResult(criteria.getPageNum(), criteria.getAmount(), key);
+
+		model.addAttribute("bDtos", boardList);
+		model.addAttribute("pageDto", pageDto);
+		// 현재 보고 있는 페이지 넘기기
+		model.addAttribute("currPage", criteria.getPageNum());
+		model.addAttribute("key", key);
+		
+		return "boardSearchList";
 	}
 	
 }

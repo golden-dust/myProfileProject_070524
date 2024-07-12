@@ -17,30 +17,19 @@
 	<h4>board list page</h4>
 	
 	<div>
-		<div class="d-flex justify-content-center">
-			<div class="hstack gap-4">
-				<div class="p-2">
-					<span>Total : ${pageDto.total} &nbsp;|&nbsp; Page : ${currPage} / ${pageDto.lastPage}</span>
+		<nav class="navbar bg-body-tertiary">
+			<div class="d-flex mb-2">
+				<div class="me-auto p-2">
+					<span>${pageDto.total}</span>
 				</div>
-				<form action="/board-search" class="d-flex" role="search">
-					<div class="p-2 ms-auto">
-						<button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">선택</button>
-						<ul class="dropdown-menu">
-							<li><a class="dropdown-item" href="#">제목</a></li>
-							<li><a class="dropdown-item" href="#">본문</a></li>
-							<li><a class="dropdown-item" href="#">제목+본문</a></li>
-							<li><a class="dropdown-item" href="#">작성자</a></li>
-						</ul>
-					</div>
-					<div class="p-2">
+				<div class="p-2">
+					<form action="/board-search" class="d-flex" role="search">
 						<input class="form-control me-2" type="search" name="key" placeholder="Search" aria-label="Search">
-					</div>
-					<div class="p-2">
 						<button class="btn btn-outline-success" type="submit">Search</button>
-					</div>
-				</form>
+					</form>
+				</div>
 			</div>
-		</div>
+		</nav>
 		<div>
 			<ol>
 				<c:forEach items="${bDtos}" var="post" >
@@ -62,9 +51,9 @@
 		<div>
 			<div class="d-flex justify-content-center">
 				<c:if test="${pageDto.prev}">
-					<a href="/board?pageNum=1" class="pagelink"><<</a>
+					<a href="/board-search?key=${key}&pageNum=1" class="pagelink"><<</a>
 					&nbsp;&nbsp;&nbsp;
-					<a href="/board?pageNum=${pageDto.startPage - 10}" class="pagelink"><</a>
+					<a href="/board-search?key=${key}&pageNum=${pageDto.startPage - 10}" class="pagelink"><</a>
 				</c:if>
 				&nbsp;&nbsp;
 				<c:forEach begin="${pageDto.startPage}" end="${pageDto.endPage}" var="pageNumber">
@@ -73,15 +62,15 @@
 							&nbsp;<span class="pagelink-curr">${pageNumber}</span>&nbsp;
 						</c:when>
 						<c:otherwise>
-							&nbsp;<a class="pagelink" href="/board?pageNum=${pageNumber}">${pageNumber}</a>&nbsp;
+							&nbsp;<a class="pagelink" href="/board-search?key=${key}&pageNum=${pageNumber}">${pageNumber}</a>&nbsp;
 						</c:otherwise>
 					</c:choose>
 				</c:forEach>
 				&nbsp;&nbsp;
 				<c:if test="${pageDto.next}">
-					<a class="pagelink" href="/board?pageNum=${pageDto.startPage + 10}">></a>
+					<a class="pagelink" href="/board-search?key=${key}&pageNum=${pageDto.startPage + 10}">></a>
 					&nbsp;&nbsp;&nbsp;
-					<a class="pagelink" href="/board?pageNum=${pageDto.lastPage}">>></a>
+					<a class="pagelink" href="/board-search?key=${key}&pageNum=${pageDto.lastPage}">>></a>
 				</c:if>
 			</div>
 		</div>

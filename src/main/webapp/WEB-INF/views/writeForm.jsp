@@ -14,6 +14,26 @@
 	
 	<h4>write post page</h4>
 	
+	<div>
+		<form method="post">
+			<div class="row mb-3">
+				<input type="hidden" name="mid" value="${mDto.mid}">
+				<input type="hidden" name="mname" value="${mDto.mname}">
+				
+				<div class="form-floating mb-3">
+					<input type="text" name="ptitle" id="floatingPtitle" class="form-control">
+					<label for="floatingPtitle">제목</label>
+				</div>
+			</div>
+			<div class="mb-3">
+				<textarea class="form-control" id="postTextarea" name="pcontent" style="height: 300px"></textarea>
+			</div>
+			<div class="d-flex justify-content-center">
+				<button type="submit" class="btn btn-primary">작성</button>
+			</div>
+		</form>
+	</div>
+	
 	<%@ include file="./fix/footer.jsp" %>
 	<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.min.js" integrity="sha384-cuYeSxntonz0PPNlHhBs68uyIAVpIIOZZ5JqeqvYYIcEL727kskC66kF92t6Xl2V" crossorigin="anonymous"></script>

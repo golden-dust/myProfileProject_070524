@@ -5,6 +5,12 @@
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
     
 <mapper namespace="com.goldendust.profile.dao.BoardDao">
+	
+	<insert id="insert">
+		INSERT INTO board(pnum, mid, mname, ptitle, pcontent) 
+			VALUES (SEQ_PNUM.nextval, #{param1}, #{param2}, #{param3}, #{param4})
+	</insert>
+
 	<select id="getList" resultType="com.goldendust.profile.dto.BoardDto">
 		SELECT * FROM 
 			(SELECT A.*, CEIL((ROWNUM / #{param2}))pagenum, ROWNUM
@@ -19,5 +25,17 @@
 	
 	<select id="getTotalPostCount" resultType="int">
 		SELECT COUNT(*) FROM board
+	</select>
+	
+	<select id="getSearchResultTotalCount" resultType="int">
+		SELECT COUNT(*) FROM board WHERE ptitle LIKE '%' || #{param1}|| '%' OR pcontent LIKE '%' || #{param1} || '%' ORDER BY PNUM DESC
+	</select>
+	
+	<select id="getSearchResult" resultType="com.goldendust.profile.dto.BoardDto">
+		SELECT * FROM 
+			(SELECT A.*, CEIL((ROWNUM / #{param2}))pagenum, ROWNUM
+				FROM
+					(SELECT * FROM board WHERE ptitle LIKE '%' || #{param3}|| '%' OR pcontent LIKE '%' || #{param3} || '%' ORDER BY PNUM DESC)A) <!-- 정렬결과를 A로 치환 -->
+						WHERE pagenum=#{param1}
 	</select>
 </mapper>

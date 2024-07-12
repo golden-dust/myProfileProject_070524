@@ -6,8 +6,7 @@ import com.goldendust.profile.dto.BoardDto;
 
 public interface BoardDao {
 	
-	// mapper incomplete
-	public int insert(String mid, String mname, String ptitle, String pcontent);
+	public void insert(String mid, String mname, String ptitle, String pcontent);
 	
 	public List<BoardDto> getList(int pageNum, int amount);
 	public BoardDto findByPnum(String pnum);
@@ -17,5 +16,10 @@ public interface BoardDao {
 	public int deletePost(String pnum);
 	
 	public int getTotalPostCount();	// 게시판 총 글 수
+	
+	public int getSearchResultTotalCount(String key);	// 검색어 결과 글 총 개수
+	
+	// 검색어 결과 리스트 (p.1)
+	public List<BoardDto> getSearchResult(int pageNum, int amount, String key);
 	
 }
