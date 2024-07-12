@@ -5,5 +5,19 @@
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
     
 <mapper namespace="com.goldendust.profile.dao.BoardDao">
-
+	<select id="getList" resultType="com.goldendust.profile.dto.BoardDto">
+		SELECT * FROM 
+			(SELECT A.*, CEIL((ROWNUM / #{param2}))pagenum, ROWNUM
+				FROM
+					(SELECT * FROM board ORDER BY PNUM DESC)A) <!-- 정렬결과를 A로 치환 -->
+						WHERE pagenum=#{param1}
+	</select>
+	
+	<select id="findByPnum" resultType="com.goldendust.profile.dto.BoardDto">
+		SELECT * FROM board WHERE PNUM=#{param1}
+	</select>
+	
+	<select id="getTotalPostCount" resultType="int">
+		SELECT COUNT(*) FROM board
+	</select>
 </mapper>

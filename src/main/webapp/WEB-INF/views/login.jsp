@@ -14,6 +14,19 @@
 	
 	<h4>sign in page</h4>
 	
+	<form method="post">
+		<div class="mb-3">
+			 <label for="mid" class="form-label">ID</label>
+			 <input type="text" class="form-control" id="mid" name="mid">
+		</div>
+		<div class="mb-3">
+			 <label for="mpw" class="form-label">Password</label>
+			 <input type="password" class="form-control" id="mpw" name="mpw">
+		</div>
+		<button type="button" class="btn btn-primary" onClick="location.href='/join'">Join</button>
+		<button type="submit" class="btn btn-primary">Sign In</button>
+	</form>
+	
 	<%@ include file="./fix/footer.jsp" %>
 	<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.min.js" integrity="sha384-cuYeSxntonz0PPNlHhBs68uyIAVpIIOZZ5JqeqvYYIcEL727kskC66kF92t6Xl2V" crossorigin="anonymous"></script>

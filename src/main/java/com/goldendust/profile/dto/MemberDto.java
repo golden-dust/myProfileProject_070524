@@ -12,7 +12,15 @@ public class MemberDto {
 		super();
 		// TODO Auto-generated constructor stub
 	}
-
+	
+	public MemberDto(String mid, String mpw, String mname, String memail) {
+		super();
+		this.mid = mid;
+		this.mpw = mpw;
+		this.mname = mname;
+		this.memail = memail;
+	}
+	
 	public MemberDto(String mid, String mpw, String mname, String memail, String mdate) {
 		super();
 		this.mid = mid;

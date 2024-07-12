@@ -12,4 +12,12 @@
 	<insert id="insert">
 		INSERT INTO members (mid, mpw, mname, memail) VALUES (#{param1}, #{param2}, #{param3}, #{param4})
 	</insert>
+	
+	<select id="findByMid" resultType="com.goldendust.profile.dto.MemberDto">
+		SELECT * FROM members WHERE mid=#{param1}
+	</select>
+	
+	<select id="checkIdAndPw" resultType="int">
+		SELECT COUNT(*) FROM members WHERE mid=#{param1} AND mpw=#{param2}
+	</select>
 </mapper>

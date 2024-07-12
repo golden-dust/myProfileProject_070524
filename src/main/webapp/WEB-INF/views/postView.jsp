@@ -13,6 +13,10 @@
 	<%@ include file="./fix/header.jsp" %>
 	
 	<h4>post view page</h4>
+	<p>${post.ptitle}</p>
+	<p>${post.mid} (${post.mname})</p>
+	<p>${post.pdate}</p>
+	<p>${post.pcontent}</p>
 	
 	<%@ include file="./fix/footer.jsp" %>
 	<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3" crossorigin="anonymous"></script>
