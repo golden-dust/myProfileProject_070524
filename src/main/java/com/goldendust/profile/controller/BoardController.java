@@ -12,10 +12,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.goldendust.profile.dao.BoardDao;
+import com.goldendust.profile.dao.CommentDao;
 import com.goldendust.profile.dao.MemberDao;
 import com.goldendust.profile.dto.BoardDto;
 import com.goldendust.profile.dto.BoardModifyDto;
 import com.goldendust.profile.dto.BoardWriteDto;
+import com.goldendust.profile.dto.CommentDto;
 import com.goldendust.profile.dto.Criteria;
 import com.goldendust.profile.dto.MemberDto;
 import com.goldendust.profile.dto.PageDto;
@@ -66,12 +68,32 @@ public class BoardController {
 		if (SessionUtil.getSid(request) != null) {
 			BoardDao bDao = sqlSession.getMapper(BoardDao.class);
 			BoardDto post = bDao.findByPnum(pnum);
+			
+			// comment list 가져오기
+			CommentDao cmDao = sqlSession.getMapper(CommentDao.class);
+			List<CommentDto> cmDtos = cmDao.getListByPnum(pnum);
+			
 			model.addAttribute("post", post);
 			model.addAttribute("mid", SessionUtil.getSid(request));
+			model.addAttribute("cmDtos", cmDtos);
 			return "postView";
 		} else {
 			return "redirect:login";
 		}
+	}
+	
+	@PostMapping("/board-post{pnum}")
+	public String addComment(@PathVariable("pnum") String pnum, HttpServletRequest request, Model model) {
+		if (SessionUtil.getSid(request) != null) {
+			String sid = SessionUtil.getSid(request);
+			String ctext = PostUtil.enableEnter(request.getParameter("ctext"));
+			CommentDao cmDao = sqlSession.getMapper(CommentDao.class);
+			cmDao.insert(pnum, sid, ctext);
+
+			return "redirect:board-post" + pnum;
+		}
+		
+		return "redirect:login";
 	}
 	
 	@GetMapping("/board-write")
@@ -195,7 +217,7 @@ BoardDao bDao = sqlSession.getMapper(BoardDao.class);
 			if (mid.equals(SessionUtil.getSid(request))) {
 				bDao.modifyPost(postToUpdate.getPnum(), 
 						postToUpdate.getPtitle(), 
-						postToUpdate.getPcontent());
+						PostUtil.enableEnter(postToUpdate.getPcontent()));
 				String url = "redirect:board-post" + postToUpdate.getPnum();
 				return url;
 			} 
@@ -205,6 +227,27 @@ BoardDao bDao = sqlSession.getMapper(BoardDao.class);
 		}
 		
 		return "redirect:login";
+	}
+	
+	@GetMapping("/delete-comment")
+	public String deleteComment(@RequestParam("cnum") String cnum, Model model) {
+		CommentDao cmDao = sqlSession.getMapper(CommentDao.class);
+		
+		String pnum = cmDao.getPnum(cnum);
+		
+		cmDao.delete(cnum);
+		
+		return "redirect:board-post" + pnum;
+	}
+	
+	@PostMapping("/modify-comment")
+	public String modifyComment(HttpServletRequest request, Model model) {
+		
+		CommentDao cmDao = sqlSession.getMapper(CommentDao.class);
+		cmDao.modify(request.getParameter("cnum"), 
+				PostUtil.enableEnter(request.getParameter("ctext")));
+		
+		return "redirect:board-post" + request.getParameter("pnum");
 	}
 	
 	

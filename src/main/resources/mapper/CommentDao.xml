@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    
+<mapper namespace="com.goldendust.profile.dao.CommentDao">
+	
+	<insert id="insert">
+ 		INSERT INTO comments (cnum, pnum, mid, ctext) VALUES (SEQ_COMMENT.NEXTVAL, #{param1}, #{param2}, #{param3})
+	</insert>
+	
+	<select id="getListByPnum" resultType="com.goldendust.profile.dto.CommentDto">
+		SELECT * FROM comments WHERE pnum=#{param1} ORDER BY cdate
+	</select>
+	
+	<delete id="delete">
+		DELETE FROM comments WHERE cnum=#{param1}
+	</delete>
+	
+	<select id="getPnum" resultType="String">
+		SELECT pnum FROM comments WHERE cnum=#{param1}
+	</select>
+	
+	<update id="modify">
+		UPDATE comments SET ctext=#{param2} WHERE cnum=#{param1}
+	</update>
+	
+</mapper>
