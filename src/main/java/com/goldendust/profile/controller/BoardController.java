@@ -19,6 +19,7 @@ import com.goldendust.profile.dto.Criteria;
 import com.goldendust.profile.dto.MemberDto;
 import com.goldendust.profile.dto.PageDto;
 import com.goldendust.profile.utility.SessionUtil;
+import com.goldendust.profile.utility.WriteUtil;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -91,7 +92,7 @@ public class BoardController {
 		bDao.insert(boardWriteDto.getMid(), 
 				boardWriteDto.getMname(), 
 				boardWriteDto.getPtitle(), 
-				boardWriteDto.getPcontent());
+				WriteUtil.enableEnter(boardWriteDto.getPcontent()));
 		return "redirect:board";
 	}
 	
@@ -113,6 +114,30 @@ BoardDao bDao = sqlSession.getMapper(BoardDao.class);
 		model.addAttribute("key", key);
 		
 		return "boardSearchList";
+	}
+	
+	@GetMapping("/dummies")
+	public String toCreateDummies(HttpServletRequest request, Model model) {
+		if (SessionUtil.getSid(request) != null) {
+			MemberDao mDao = sqlSession.getMapper(MemberDao.class);
+			MemberDto mDto = mDao.findByMid(SessionUtil.getSid(request));
+			model.addAttribute("mDto", mDto);
+			return "writeForm";
+		}
+		
+		return "redirect:login";
+	}
+	
+	@PostMapping("/dummies")
+	public String createDummies(BoardWriteDto boardWriteDto) {
+		BoardDao bDao = sqlSession.getMapper(BoardDao.class);
+		for (int i=0; i<10; i++) {
+			bDao.insert(boardWriteDto.getMid(), 
+					boardWriteDto.getMname(), 
+					boardWriteDto.getPtitle() + String.format(" %d", i), 
+					WriteUtil.enableEnter(boardWriteDto.getPcontent()) + String.format(" %d", i));
+		}
+		return "redirect:board";
 	}
 	
 }

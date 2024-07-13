@@ -5,13 +5,14 @@
 <head>
 <meta charset="UTF-8">
 <link rel="stylesheet" type="text/css" href="bootstrap.min.css">
+<style>
+	
+</style>
 <script src="bootstrap.js"></script>
 <body>
-	<footer>
-		<div class="position-absolute bottom-0 start-50 translate-middle-x">
-			<div class="position-relative top-50 start-50 translate-middle-x">
-				<p>Jiny Kim &#169; 2024 created with Spring Boot</p>
-			</div>
+	<footer class="footer mt-auto py-3 bg-body-tertiary">
+		<div class="container">
+			<span class="text-body-secondary">Jiny Kim &#169; 2024 created with Spring Boot</span>
 		</div>
 	</footer>
 </body>
