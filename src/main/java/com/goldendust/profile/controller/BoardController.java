@@ -14,12 +14,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.goldendust.profile.dao.BoardDao;
 import com.goldendust.profile.dao.MemberDao;
 import com.goldendust.profile.dto.BoardDto;
+import com.goldendust.profile.dto.BoardModifyDto;
 import com.goldendust.profile.dto.BoardWriteDto;
 import com.goldendust.profile.dto.Criteria;
 import com.goldendust.profile.dto.MemberDto;
 import com.goldendust.profile.dto.PageDto;
 import com.goldendust.profile.utility.SessionUtil;
-import com.goldendust.profile.utility.WriteUtil;
+import com.goldendust.profile.utility.PostUtil;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -92,7 +93,8 @@ public class BoardController {
 		bDao.insert(boardWriteDto.getMid(), 
 				boardWriteDto.getMname(), 
 				boardWriteDto.getPtitle(), 
-				WriteUtil.enableEnter(boardWriteDto.getPcontent()));
+				// 오라클 디비에서 \n 자동 삭제로 인한 게시글 개행 불가 수정
+				PostUtil.enableEnter(boardWriteDto.getPcontent()));
 		return "redirect:board";
 	}
 	
@@ -135,9 +137,75 @@ BoardDao bDao = sqlSession.getMapper(BoardDao.class);
 			bDao.insert(boardWriteDto.getMid(), 
 					boardWriteDto.getMname(), 
 					boardWriteDto.getPtitle() + String.format(" %d", i), 
-					WriteUtil.enableEnter(boardWriteDto.getPcontent()) + String.format(" %d", i));
+					// 오라클 디비에서 \n 자동 삭제로 인한 게시글 개행 불가 수정
+					PostUtil.enableEnter(boardWriteDto.getPcontent()) + String.format(" %d", i));
 		}
 		return "redirect:board";
 	}
+	
+	@GetMapping("/delete-post")
+	public String deletePost(@RequestParam("pnum") String pnum, HttpServletRequest request) {
+		if (SessionUtil.getSid(request) != null) {
+			
+			// sid와 게시글 mid 일치 여부 확인
+			BoardDao bDao = sqlSession.getMapper(BoardDao.class);
+			String mid = bDao.findMidByPnum(pnum);
+			if (mid.equals(SessionUtil.getSid(request))) {
+				bDao.deletePost(pnum);
+				return "redirect:board";
+			} 
+			
+			request.setAttribute("errorMsg", "본인의 글만 수정할 수 있습니다");
+			return "errors/sidMatchError";
+		}
+		
+		return "redirect:login";
+	}
+	
+	@GetMapping("/modify-post")
+	public String modifyPost(@RequestParam("pnum") String pnum, HttpServletRequest request, Model model) {
+		
+		if (SessionUtil.getSid(request) != null) {
+			
+			// sid와 게시글 mid 일치 여부 확인
+			BoardDao bDao = sqlSession.getMapper(BoardDao.class);
+			String mid = bDao.findMidByPnum(pnum);
+			if (mid.equals(SessionUtil.getSid(request))) {
+				BoardDto bDto = bDao.findByPnum(pnum);
+				bDto.setPcontent(PostUtil.transToView(bDto.getPcontent()));
+				model.addAttribute("post", bDto);
+				return "modifyPostForm";
+			} 
+			
+			request.setAttribute("errorMsg", "본인의 글만 수정할 수 있습니다");
+			return "errors/sidMatchError";
+		}
+		
+		return "redirect:login";
+	}
+	
+	@PostMapping("/modify-post")
+	public String modifyPostOk(BoardModifyDto postToUpdate, HttpServletRequest request, Model model) {
+		
+		if (SessionUtil.getSid(request) != null) {
+			
+			// sid와 게시글 mid 일치 여부 확인
+			BoardDao bDao = sqlSession.getMapper(BoardDao.class);
+			String mid = bDao.findMidByPnum(postToUpdate.getPnum());
+			if (mid.equals(SessionUtil.getSid(request))) {
+				bDao.modifyPost(postToUpdate.getPnum(), 
+						postToUpdate.getPtitle(), 
+						postToUpdate.getPcontent());
+				String url = "redirect:board-post" + postToUpdate.getPnum();
+				return url;
+			} 
+			
+			request.setAttribute("errorMsg", "본인의 글만 수정할 수 있습니다");
+			return "errors/sidMatchError";
+		}
+		
+		return "redirect:login";
+	}
+	
 	
 }

@@ -13,6 +13,7 @@ public interface BoardDao {
 	
 	// mapper incomplete
 	public int modifyPost(String pnum, String ptitle, String pcontent);
+	
 	public int deletePost(String pnum);
 	
 	public int getTotalPostCount();	// 게시판 총 글 수
@@ -21,5 +22,8 @@ public interface BoardDao {
 	
 	// 검색어 결과 리스트 (p.1)
 	public List<BoardDto> getSearchResult(int pageNum, int amount, String key);
+	
+	// 작성자 아이디 가져오기
+	public String findMidByPnum(String pnum);
 	
 }

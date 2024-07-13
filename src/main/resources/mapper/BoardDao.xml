@@ -23,6 +23,14 @@
 		SELECT * FROM board WHERE PNUM=#{param1}
 	</select>
 	
+	<update id="modifyPost">
+		UPDATE board SET ptitle=#{param2}, pcontent=#{param3} WHERE pnum=#{param1} 
+	</update>
+	
+	<delete id="deletePost">
+		DELETE FROM board WHERE PNUM=#{param1}
+	</delete>
+	
 	<select id="getTotalPostCount" resultType="int">
 		SELECT COUNT(*) FROM board
 	</select>
@@ -38,4 +46,9 @@
 					(SELECT * FROM board WHERE ptitle LIKE '%' || #{param3}|| '%' OR pcontent LIKE '%' || #{param3} || '%' ORDER BY PNUM DESC)A) <!-- 정렬결과를 A로 치환 -->
 						WHERE pagenum=#{param1}
 	</select>
+	
+	<select id="findMidByPnum" resultType="String">
+		SELECT mid FROM board WHERE PNUM=#{param1}
+	</select>
+	
 </mapper>
