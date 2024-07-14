@@ -43,14 +43,16 @@
 			</div>
 		</div>
 		<div>
-			<ol>
+			<ol class="list-group list-group-flush">
 				<c:forEach items="${bDtos}" var="post" >
 					<li class="list-group-item d-flex justify-content-between align-items-start">
 						<div class="ms-2 me-auto">
 							<div class="fw-bold"><span>${post.pnum}</span> <a href="/board-post${post.pnum}">${post.ptitle}</a></div>
 							&emsp;&emsp;${post.mid} | ${post.pdate}
 						</div>
-						<span class="badge text-bg-primary rounded-pill"></span>
+						<c:if test="${post.numcomments > 0}">
+							<span class="badge text-bg-primary rounded-pill">${post.numcomments}</span>
+						</c:if>
 					</li>
 				</c:forEach>
 			</ol>
@@ -61,30 +63,40 @@
 			</div>	
 		</div>
 		<div>
-			<div class="d-flex justify-content-center">
-				<c:if test="${pageDto.prev}">
-					<a href="/board-search?key=${key}&pageNum=1" class="pagelink"><<</a>
-					&nbsp;&nbsp;&nbsp;
-					<a href="/board-search?key=${key}&pageNum=${pageDto.startPage - 10}" class="pagelink"><</a>
-				</c:if>
-				&nbsp;&nbsp;
-				<c:forEach begin="${pageDto.startPage}" end="${pageDto.endPage}" var="pageNumber">
-					<c:choose>
-						<c:when test="${currPage == pageNumber}">
-							&nbsp;<span class="pagelink-curr">${pageNumber}</span>&nbsp;
-						</c:when>
-						<c:otherwise>
-							&nbsp;<a class="pagelink" href="/board-search?key=${key}&pageNum=${pageNumber}">${pageNumber}</a>&nbsp;
-						</c:otherwise>
-					</c:choose>
-				</c:forEach>
-				&nbsp;&nbsp;
-				<c:if test="${pageDto.next}">
-					<a class="pagelink" href="/board-search?key=${key}&pageNum=${pageDto.startPage + 10}">></a>
-					&nbsp;&nbsp;&nbsp;
-					<a class="pagelink" href="/board-search?key=${key}&pageNum=${pageDto.lastPage}">>></a>
-				</c:if>
-			</div>
+			<nav aria-label="page-navigation" class="d-flex justify-content-center">
+				<ul class="pagination">
+					<c:if test="${pageDto.prev}">
+						<li class="page-item">
+							<a href="/board-search?key=${key}&pageNum=1" class="page-link"><<</a>
+						</li>
+						<li class="page-item">
+							<a href="/board-search?key=${key}&pageNum=${pageDto.startPage - 10}" class="page-link"><</a>
+						</li>
+					</c:if>
+					<c:forEach begin="${pageDto.startPage}" end="${pageDto.endPage}" var="pageNumber">
+						<c:choose>
+							<c:when test="${currPage == pageNumber}">
+								<li class="page-item active" aria-current="page">
+									<span class="page-link">${pageNumber}</span>
+								</li>
+							</c:when>
+							<c:otherwise>
+								<li class="page-item">
+									<a class="page-link" href="/board-search?key=${key}&pageNum=${pageNumber}">${pageNumber}</a>
+								</li>
+							</c:otherwise>
+						</c:choose>
+					</c:forEach>
+					<c:if test="${pageDto.next}">
+						<li class="page-item">
+							<a class="page-link" href="/board-search?key=${key}&pageNum=${pageDto.startPage + 10}">></a>
+						</li>
+						<li class="page-item">
+							<a class="page-link" href="/board-search?key=${key}&pageNum=${pageDto.lastPage}">>></a>
+						</li>
+					</c:if>
+				</ul>
+			</nav>
 		</div>
 	</div>
 	

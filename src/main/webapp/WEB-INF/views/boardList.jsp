@@ -9,13 +9,18 @@
 	<link rel="stylesheet" href="/resources/css/board.css">
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
 	<title>board</title>
+	<style>
+		#wrapper {
+			padding: 10px 10px 10px 10px;
+		}
+	</style>
 </head>
 <body class="d-flex flex-column h-100">
 	<%@ include file="./fix/header.jsp" %>
 	<main class="flex-shrink-0">
 	<h4>board list page</h4>
 	
-	<div>
+	<div id="wrapper">
 		<div class="d-flex justify-content-center">
 			<div class="hstack gap-4">
 				<div class="p-2">
@@ -41,14 +46,21 @@
 			</div>
 		</div>
 		<div>
-			<ol>
+			<ol class="list-group list-group-flush">
 				<c:forEach items="${bDtos}" var="post" >
 					<li class="list-group-item d-flex justify-content-between align-items-start">
 						<div class="ms-2 me-auto">
-							<div class="fw-bold"><span>${post.pnum}</span> <a href="/board-post${post.pnum}">${post.ptitle}</a></div>
-							&emsp;&emsp;${post.mid} | ${post.pdate}
+							<div class="fw-bold">
+								<span>${post.pnum}</span> <a href="/board-post${post.pnum}">${post.ptitle}</a>
+							</div>
+							<div>
+								&emsp;&emsp;
+								<span class="fs-6 fw-light">${post.mid} &middot; ${post.pdate}</span>
+							</div>
 						</div>
-						<span class="badge text-bg-primary rounded-pill"></span>
+						<c:if test="${post.numcomments > 0}">
+							<span class="badge text-bg-primary rounded-pill">${post.numcomments}</span>
+						</c:if>
 					</li>
 				</c:forEach>
 			</ol>

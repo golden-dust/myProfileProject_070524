@@ -52,7 +52,7 @@
 			
 			<div class="row justify-content-start">
 				<div class="col-9">
-					<p class="fs-8 fw-light">${post.mid} &middot; ${post.pdate}</p>
+					<p class="fs-8 fw-light">${post.mid} &middot; ${post.viewcount} &middot; ${post.pdate}</p>
 				</div>
 			</div>
 			

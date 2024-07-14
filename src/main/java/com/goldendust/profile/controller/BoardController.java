@@ -1,6 +1,5 @@
 package com.goldendust.profile.controller;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.ibatis.session.SqlSession;
@@ -21,6 +20,7 @@ import com.goldendust.profile.dto.CommentDto;
 import com.goldendust.profile.dto.Criteria;
 import com.goldendust.profile.dto.MemberDto;
 import com.goldendust.profile.dto.PageDto;
+import com.goldendust.profile.service.CommentService;
 import com.goldendust.profile.utility.SessionUtil;
 import com.goldendust.profile.utility.PostUtil;
 
@@ -67,6 +67,9 @@ public class BoardController {
 	public String toPost(@PathVariable("pnum") String pnum, HttpServletRequest request, Model model) {
 		if (SessionUtil.getSid(request) != null) {
 			BoardDao bDao = sqlSession.getMapper(BoardDao.class);
+			
+			// 조회수 1 증가 후 게시글 가져오기
+			bDao.incrementViewCount(pnum);
 			BoardDto post = bDao.findByPnum(pnum);
 			
 			// comment list 가져오기
@@ -87,8 +90,7 @@ public class BoardController {
 		if (SessionUtil.getSid(request) != null) {
 			String sid = SessionUtil.getSid(request);
 			String ctext = PostUtil.enableEnter(request.getParameter("ctext"));
-			CommentDao cmDao = sqlSession.getMapper(CommentDao.class);
-			cmDao.insert(pnum, sid, ctext);
+			CommentService.insertComment(sqlSession, pnum, sid, ctext);
 
 			return "redirect:board-post" + pnum;
 		}
@@ -139,32 +141,7 @@ BoardDao bDao = sqlSession.getMapper(BoardDao.class);
 		
 		return "boardSearchList";
 	}
-	
-	@GetMapping("/dummies")
-	public String toCreateDummies(HttpServletRequest request, Model model) {
-		if (SessionUtil.getSid(request) != null) {
-			MemberDao mDao = sqlSession.getMapper(MemberDao.class);
-			MemberDto mDto = mDao.findByMid(SessionUtil.getSid(request));
-			model.addAttribute("mDto", mDto);
-			return "writeForm";
-		}
-		
-		return "redirect:login";
-	}
-	
-	@PostMapping("/dummies")
-	public String createDummies(BoardWriteDto boardWriteDto) {
-		BoardDao bDao = sqlSession.getMapper(BoardDao.class);
-		for (int i=0; i<10; i++) {
-			bDao.insert(boardWriteDto.getMid(), 
-					boardWriteDto.getMname(), 
-					boardWriteDto.getPtitle() + String.format(" %d", i), 
-					// 오라클 디비에서 \n 자동 삭제로 인한 게시글 개행 불가 수정
-					PostUtil.enableEnter(boardWriteDto.getPcontent()) + String.format(" %d", i));
-		}
-		return "redirect:board";
-	}
-	
+
 	@GetMapping("/delete-post")
 	public String deletePost(@RequestParam("pnum") String pnum, HttpServletRequest request) {
 		if (SessionUtil.getSid(request) != null) {
@@ -249,6 +226,5 @@ BoardDao bDao = sqlSession.getMapper(BoardDao.class);
 		
 		return "redirect:board-post" + request.getParameter("pnum");
 	}
-	
-	
+
 }

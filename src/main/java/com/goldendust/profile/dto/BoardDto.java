@@ -8,13 +8,16 @@ public class BoardDto {
 	private String ptitle;
 	private String pcontent;
 	private String pdate;
+	private String viewcount;
+	private String numcomments;
 	
 	public BoardDto() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 
-	public BoardDto(int pnum, String mid, String mname, String ptitle, String pcontent, String pdate) {
+	public BoardDto(int pnum, String mid, String mname, String ptitle, String pcontent, String pdate, String viewcount,
+			String numcomments) {
 		super();
 		this.pnum = pnum;
 		this.mid = mid;
@@ -22,6 +25,8 @@ public class BoardDto {
 		this.ptitle = ptitle;
 		this.pcontent = pcontent;
 		this.pdate = pdate;
+		this.viewcount = viewcount;
+		this.numcomments = numcomments;
 	}
 
 	public int getPnum() {
@@ -70,6 +75,22 @@ public class BoardDto {
 
 	public void setPdate(String pdate) {
 		this.pdate = pdate;
+	}
+
+	public String getViewcount() {
+		return viewcount;
+	}
+
+	public void setViewcount(String viewcount) {
+		this.viewcount = viewcount;
+	}
+
+	public String getNumcomments() {
+		return numcomments;
+	}
+
+	public void setNumcomments(String numcomments) {
+		this.numcomments = numcomments;
 	}
 
 }

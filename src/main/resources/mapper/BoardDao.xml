@@ -7,8 +7,8 @@
 <mapper namespace="com.goldendust.profile.dao.BoardDao">
 	
 	<insert id="insert">
-		INSERT INTO board(pnum, mid, mname, ptitle, pcontent) 
-			VALUES (SEQ_PNUM.nextval, #{param1}, #{param2}, #{param3}, #{param4})
+		INSERT INTO board(pnum, mid, mname, ptitle, pcontent, viewcount, numcomments) 
+			VALUES (SEQ_PNUM.nextval, #{param1}, #{param2}, #{param3}, #{param4}, 0, 0)
 	</insert>
 
 	<select id="getList" resultType="com.goldendust.profile.dto.BoardDto">
@@ -50,5 +50,21 @@
 	<select id="findMidByPnum" resultType="String">
 		SELECT mid FROM board WHERE PNUM=#{param1}
 	</select>
+	
+	<update id="setCommentCount">
+		UPDATE board SET numcomments=#{param2} WHERE pnum=#{param1}
+	</update>
+	
+	<update id="incrementViewCount">
+		UPDATE board SET viewcount=viewcount+1 WHERE pnum=#{param1}
+	</update>
+	
+	<!-- temp -->
+	<update id="resetViewCount">
+		UPDATE board SET viewcount=0 WHERE pnum=#{param1}
+	</update>
+	<update id="resetAllViewCount">
+		UPDATE board SET viewcount=0
+	</update>
 	
 </mapper>
