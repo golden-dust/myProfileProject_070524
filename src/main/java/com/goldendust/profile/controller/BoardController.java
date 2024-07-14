@@ -24,7 +24,9 @@ import com.goldendust.profile.service.CommentService;
 import com.goldendust.profile.utility.SessionUtil;
 import com.goldendust.profile.utility.PostUtil;
 
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 
 @Controller
@@ -63,13 +65,49 @@ public class BoardController {
 		return "boardList";
 	}
 	
+	// 조회수 중복방지 + 조회수 증가
+	private void viewCountUp(String pnum, HttpServletRequest req, HttpServletResponse res) {
+		
+		Cookie oldCookie = null;
+		
+		// 쿠키에 게시글 조회 목록이 있는지 확인 -> 있으면 oldCookie에 저장
+		Cookie[] cookies = req.getCookies();
+		if (cookies != null) {
+			for (Cookie cookie : cookies) {
+				if (cookie.getName().equals("postView")) {
+					oldCookie = cookie;
+				}
+			}
+		}
+		
+		if (oldCookie != null) {
+			// 쿠키에 클릭한 게시글이 없다면 조회수 업
+			if (!oldCookie.getValue().contains("[" + pnum + "]")) {
+				BoardDao bDao = sqlSession.getMapper(BoardDao.class);
+				bDao.incrementViewCount(pnum);
+				oldCookie.setValue(oldCookie.getValue() + "_[" + pnum + "]");
+				oldCookie.setPath("/");
+				oldCookie.setMaxAge(60 * 60 * 24);
+				res.addCookie(oldCookie);
+			}
+		} else {
+			BoardDao bDao = sqlSession.getMapper(BoardDao.class);
+			bDao.incrementViewCount(pnum);
+			Cookie newCookie = new Cookie("postView", "[" + pnum + "]");
+			newCookie.setPath("/");
+			newCookie.setMaxAge(60 * 60 * 24);
+			res.addCookie(newCookie);
+		}
+	}
+	
+	
 	@GetMapping("/board-post{pnum}")
-	public String toPost(@PathVariable("pnum") String pnum, HttpServletRequest request, Model model) {
+	public String toPost(@PathVariable("pnum") String pnum, HttpServletRequest request, HttpServletResponse response, Model model) {
 		if (SessionUtil.getSid(request) != null) {
 			BoardDao bDao = sqlSession.getMapper(BoardDao.class);
 			
 			// 조회수 1 증가 후 게시글 가져오기
-			bDao.incrementViewCount(pnum);
+			this.viewCountUp(pnum, request, response);
 			BoardDto post = bDao.findByPnum(pnum);
 			
 			// comment list 가져오기
